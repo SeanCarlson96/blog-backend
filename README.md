@@ -1,1 +1,1 @@
-# sean-carlson-blog-cms-capstone-be
+# Blog App; practice capstone
