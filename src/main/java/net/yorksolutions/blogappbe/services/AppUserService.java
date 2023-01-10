@@ -1,7 +1,9 @@
 package net.yorksolutions.blogappbe.services;
 
 
+import net.yorksolutions.blogappbe.DTOs.AppUserDTO;
 import net.yorksolutions.blogappbe.models.AppUser;
+import net.yorksolutions.blogappbe.models.Message;
 import net.yorksolutions.blogappbe.repositories.AppUserRepo;
 
 import net.yorksolutions.blogappbe.repositories.MessageRepo;
@@ -23,7 +25,7 @@ public class AppUserService {
     public AppUser getUserByUsernameAndPassword(String username, String password) {
         return appUserRepo.findAppUserByUsernameAndPassword(username, password).orElse(null);
     }
-    public void createAppUser(AppUser newAppUser)  throws Exception {
+    public void createAppUser(AppUserDTO newAppUser)  throws Exception {
         Optional<AppUser> appUserWithUsername = appUserRepo.findAppUserByUsername(newAppUser.username);
         if (appUserWithUsername.isPresent())
             throw new Exception();
@@ -39,17 +41,23 @@ public class AppUserService {
         appUserRepo.deleteById(id);
     }
 
-    public void updateAppUser(Long id, AppUser updatedAppUser) throws Exception {
+    public void updateAppUser(Long id, AppUserDTO updatedAppUser) throws Exception {
         Optional<AppUser> appUserWithId = appUserRepo.findById(id);
         if (appUserWithId.isEmpty())
             throw new Exception();
-//TODO might need to change this method to accept AppUserDTO
-        //might also need to use my me
         AppUser appUser = appUserWithId.get();
         appUser.username = updatedAppUser.username;
         appUser.password = updatedAppUser.password;
-        appUser.messages = updatedAppUser.messages;
-
+        //loop through updatedAppUser.messages
+        for (Long messageId : updatedAppUser.messageIds) {
+            //get the message for that messageId
+            Optional<Message> messageWithId = messageRepo.findById(messageId);
+            if (messageWithId.isEmpty())
+                throw new Exception();
+            //add that message to the Set of Messages that is appUser.messages
+            messageWithId.ifPresent(appUser.messages::add);
+            //appUser.messages.add(messageWithId.orElse(throw new Exception()));
+        }
         appUserRepo.save(appUser);
     }
 }
