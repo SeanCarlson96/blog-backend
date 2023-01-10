@@ -3,6 +3,7 @@ package net.yorksolutions.blogappbe.models;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.Set;
 
 @Entity

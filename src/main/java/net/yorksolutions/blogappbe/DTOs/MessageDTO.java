@@ -5,13 +5,13 @@ import java.util.Optional;
 
 public class MessageDTO {
     public Optional<Long> id;
-    public String title;
+    public Optional<String> title;
     public String body;
     public Long authorId;
     public Date created_date;
     public Date updated_date;
-    public Long views;
-    public Iterable<Long> commentsIds;
-    public Long postId;
-    public Long recipientId;
+    public Optional<Long> views;
+    public Optional<Iterable<Long>> commentIds;
+    public Optional<Long> postId;
+    public Optional<Long> recipientId;
 }
