@@ -1,8 +1,6 @@
 package net.yorksolutions.blogappbe.services;
 
-import net.yorksolutions.blogappbe.DTOs.AppUserDTO;
 import net.yorksolutions.blogappbe.DTOs.MessageDTO;
-import net.yorksolutions.blogappbe.models.AppUser;
 import net.yorksolutions.blogappbe.models.Message;
 import net.yorksolutions.blogappbe.repositories.AppUserRepo;
 import net.yorksolutions.blogappbe.repositories.MessageRepo;
@@ -23,15 +21,15 @@ public class MessageService {
     }
     public void createMessage(MessageDTO newMessage)  throws Exception {
         Message message = new Message();
-        if(newMessage.title.isPresent())
+        if(newMessage.title != null)
             message.title = newMessage.title.orElse(null);
         message.body = newMessage.body;
         message.author = appUserRepo.findById(newMessage.authorId).orElse(null);
         message.created_date = newMessage.created_date;
         message.updated_date = newMessage.updated_date;
-        if(newMessage.views.isPresent())
+        if(newMessage.views != null)
             message.views = newMessage.views.orElse(null);
-        if(newMessage.commentIds.isPresent()) {
+        if(newMessage.commentIds != null) {
             for (Long commentId : newMessage.commentIds.orElse(null)) {
                 Optional<Message> commentWithId = messageRepo.findById(commentId);
                 if (commentWithId.isEmpty())
@@ -39,9 +37,9 @@ public class MessageService {
                 commentWithId.ifPresent(message.comments::add);
             }
         }
-        if(newMessage.postId.isPresent())
+        if(newMessage.postId != null)
             message.post = messageRepo.findById(newMessage.postId.orElse(null)).orElse(null);
-        if(newMessage.recipientId.isPresent())
+        if(newMessage.recipientId != null)
             message.recipient = appUserRepo.findById(newMessage.recipientId.orElse(null)).orElse(null);
         messageRepo.save(message);
     }
