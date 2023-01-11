@@ -1,5 +1,7 @@
 package net.yorksolutions.blogappbe.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -14,6 +16,7 @@ public class Message {
     public String title;
     public String body;
     @ManyToOne
+    @JsonIgnoreProperties("messages")
     public AppUser author;
     public Date created_date;
     public Date updated_date;
@@ -21,6 +24,7 @@ public class Message {
     @OneToMany
     public Set<Message> comments;
     @ManyToOne
+    @JsonIgnoreProperties("comments")
     public Message post;
     @OneToOne
     public AppUser recipient;

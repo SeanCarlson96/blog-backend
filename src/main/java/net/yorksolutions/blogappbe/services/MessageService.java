@@ -1,6 +1,7 @@
 package net.yorksolutions.blogappbe.services;
 
 import net.yorksolutions.blogappbe.DTOs.MessageDTO;
+import net.yorksolutions.blogappbe.models.AppUser;
 import net.yorksolutions.blogappbe.models.Message;
 import net.yorksolutions.blogappbe.repositories.AppUserRepo;
 import net.yorksolutions.blogappbe.repositories.MessageRepo;
@@ -39,9 +40,14 @@ public class MessageService {
         }
         if(newMessage.postId != null)
             message.post = messageRepo.findById(newMessage.postId.orElse(null)).orElse(null);
+            Message messageWithComments = messageRepo.findById(newMessage.postId.orElse(null)).get();
+            messageWithComments.comments.add(message);
         if(newMessage.recipientId != null)
             message.recipient = appUserRepo.findById(newMessage.recipientId.orElse(null)).orElse(null);
         messageRepo.save(message);
+        AppUser appUser = appUserRepo.findById(newMessage.authorId).get();
+        appUser.messages.add(message);
+        appUserRepo.save(appUser);
     }
     public void deleteMessageById(Long id) throws Exception {
         Optional<Message> messageWithId = messageRepo.findById(id);
